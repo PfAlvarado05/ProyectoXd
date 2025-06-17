@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reporte Gastos e Ingresos</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    h2 { text-align: center; }
+  </style>
+</head>
+<body>
+  <h2>Reporte de Gastos e Ingresos para {{ usuario.username }}</h2>
+
+  <h3>Gastos</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Categoría</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in transacciones %}
+      <tr>
+        <td>{{ t.categoria.nombre }}</td>
+        <td>{{ t.monto }}</td>
+        <td>{{ t.fecha }}</td>
+        <td>{{ t.descripcion }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Ingresos</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in ingresos %}
+      <tr>
+        <td>{{ i.monto }}</td>
+        <td>{{ i.fecha }}</td>
+        <td>{{ i.descripcion }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

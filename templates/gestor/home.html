@@ -1,0 +1,32 @@
+{% extends 'gestor/base.html' %}
+
+{% block content %}
+<h2>Bienvenido {{ user.username }}</h2>
+
+<h3>Tus Presupuestos</h3>
+{% if presupuestos %}
+<ul>
+  {% for p in presupuestos %}
+  <li>{{ p.categoria.nombre }}: Límite {{ p.limite }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No tienes presupuestos definidos.</p>
+{% endif %}
+
+<h3>Últimas Transacciones</h3>
+{% if transacciones %}
+<ul>
+  {% for t in transacciones %}
+  <li>{{ t.fecha }} - {{ t.categoria.nombre }} - {{ t.monto }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No hay transacciones recientes.</p>
+{% endif %}
+
+<a href="{% url 'agregar_presupuesto' %}">Agregar Presupuesto</a> | 
+<a href="{% url 'agregar_transaccion' %}">Agregar Transacción</a> | 
+<a href="{% url 'agregar_categoria' %}">Agregar Categoría</a>
+
+{% endblock %}

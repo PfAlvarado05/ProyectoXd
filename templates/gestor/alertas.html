@@ -1,0 +1,41 @@
+{% extends "gestor/base.html" %}
+
+{% block title %}Alertas de Presupuesto{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-exclamation-triangle-fill text-warning"></i> Alertas de Presupuesto</h2>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left-circle"></i> Volver al Dashboard
+    </a>
+  </div>
+
+  {% if alertas %}
+    <div class="row">
+      {% for alerta in alertas %}
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm border-start border-4 border-danger">
+            <div class="card-body">
+              <h5 class="card-title text-danger">
+                <i class="bi bi-exclamation-circle-fill"></i> Presupuesto Excedido
+              </h5>
+              <p class="mb-1"><strong>Categoría:</strong> {{ alerta.categoria }}</p>
+              <p class="mb-1"><strong>Límite:</strong> {{ alerta.limite }}</p>
+              <p class="mb-1"><strong>Gastado:</strong> {{ alerta.gastado }}</p>
+              <p class="mb-1"><strong>Exceso:</strong> {{ alerta.exceso }}</p>
+              <div class="mt-2">
+                <span class="badge bg-danger">¡Atención!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-success text-center shadow-sm" role="alert">
+      <i class="bi bi-check-circle-fill"></i> ¡Todo está bajo control! No hay alertas activas.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

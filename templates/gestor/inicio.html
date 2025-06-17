@@ -1,0 +1,12 @@
+{% extends 'gestor/base.html' %}
+{% block content %}
+<h2>Bienvenido, {{ user.username }}</h2>
+<p>Selecciona una opción:</p>
+<ul>
+    <li><a href="{% url 'agregar_categoria' %}">Agregar Categoría</a></li>
+    <li><a href="{% url 'agregar_transaccion' %}">Agregar Transacción</a></li>
+    <li><a href="{% url 'agregar_presupuesto' %}">Agregar Presupuesto</a></li>
+    <li><a href="{% url 'grafico' %}">Ver Gráfico</a></li>
+    <li><a href="{% url 'alertas' %}">Ver Alertas</a></li>
+</ul>
+{% endblock %}
