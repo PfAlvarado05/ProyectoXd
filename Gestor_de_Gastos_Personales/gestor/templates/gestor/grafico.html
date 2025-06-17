@@ -1,0 +1,28 @@
+{% extends 'gestor/base.html' %}
+{% block content %}
+<h2>Gastos por Categoría</h2>
+<div style="max-width: 500px; margin: auto;">
+  <canvas id="graficoGastos"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('graficoGastos').getContext('2d');
+new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: {{ etiquetas|safe }},
+    datasets: [{
+      data: {{ datos|safe }},
+      backgroundColor: ['#60a5fa', '#34d399', '#fbbf24', '#f87171', '#a78bfa', '#f472b6'],
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' },
+      title: { display: true, text: 'Distribución de gastos por categoría' }
+    }
+  }
+});
+</script>
+{% endblock %}

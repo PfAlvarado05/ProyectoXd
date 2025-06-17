@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Principal - Gestor de Gastos</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #f8f9fa;
+    }
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      position: fixed;
+      top: 0; left: 0;
+      background-color: #343a40;
+      color: white;
+      padding-top: 1rem;
+    }
+    .sidebar a {
+      color: #adb5bd;
+      text-decoration: none;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background-color: #495057;
+      color: white;
+      border-radius: 0 25px 25px 0;
+    }
+    .content {
+      margin-left: 250px;
+      padding: 2rem;
+      flex-grow: 1;
+    }
+    .card-icon {
+      font-size: 2.5rem;
+      opacity: 0.2;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+    .card {
+      position: relative;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <h4 class="px-3 mb-4">🧾 Gestor Gastos</h4>
+    <a href="{% url 'dashboard' %}" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="{% url 'agregar_categoria' %}"><i class="bi bi-tags"></i> Categorías</a>
+    <a href="{% url 'agregar_transaccion' %}"><i class="bi bi-cash-stack"></i> Gastos</a>
+    <a href="{% url 'agregar_presupuesto' %}"><i class="bi bi-wallet2"></i> Presupuestos</a>
+    <a href="{% url 'agregar_ingreso' %}"><i class="bi bi-wallet-fill"></i> Ingresos</a>
+    <a href="{% url 'grafico_gastos' %}"><i class="bi bi-bar-chart-line"></i> Gráficos</a>
+    <a href="{% url 'alertas_presupuesto' %}"><i class="bi bi-bell"></i> Alertas</a>
+    <a href="{% url 'filtro_transacciones' %}"><i class="bi bi-funnel"></i> Filtros</a>
+    <a href="{% url 'exportar_pdf' %}"><i class="bi bi-file-earmark-pdf"></i> Exportar PDF</a>
+    <a href="{% url 'exportar_excel' %}"><i class="bi bi-file-earmark-excel"></i> Exportar Excel</a>
+    <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
+  </nav>
+
+  <main class="content">
+    <h1 class="mb-4">Hola, <span class="text-primary">{{ request.user.username }}</span> 👋</h1>
+
+    <div class="row g-4 mb-5">
+      <!-- Total Gastos -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 rounded-3 p-3 bg-white">
+          <i class="bi bi-currency-dollar card-icon text-danger"></i>
+          <h5>Total Gastos</h5>
+          <h2 class="text-danger">${{ total_gastos }}</h2>
+          <p class="text-muted">Cantidad gastada hasta la fecha</p>
+        </div>
+      </div>
+
+      <!-- Total Ingresos -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 rounded-3 p-3 bg-white">
+          <i class="bi bi-wallet2 card-icon text-success"></i>
+          <h5>Total Ingresos</h5>
+          <h2 class="text-success">${{ total_ingresos }}</h2>
+          <p class="text-muted">Dinero recibido hasta la fecha</p>
+        </div>
+      </div>
+
+      <!-- Balance -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 rounded-3 p-3 bg-white">
+          <i class="bi bi-graph-up-arrow card-icon text-primary"></i>
+          <h5>Balance Neto</h5>
+          <h2 class="text-primary">${{ balance }}</h2>
+          <p class="text-muted">Ingresos menos gastos</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="mb-5">
+      <h3 class="mb-3">Últimas Transacciones</h3>
+      {% if ultimas_transacciones %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Fecha</th>
+              <th>Categoría</th>
+              <th>Descripción</th>
+              <th>Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in ultimas_transacciones %}
+            <tr>
+              <td>{{ t.fecha }}</td>
+              <td>{{ t.categoria.nombre }}</td>
+              <td>{{ t.descripcion|default:"-" }}</td>
+              <td class="text-danger">${{ t.monto }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted">No hay transacciones recientes.</p>
+      {% endif %}
+    </section>
+
+    <section>
+      <h3 class="mb-3">Alertas de Presupuesto</h3>
+      {% if alertas %}
+        <div class="alert alert-warning rounded-3">
+          {% for alerta in alertas %}
+            <p>
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              Has usado <strong>{{ alerta.porcentaje }}%</strong> del presupuesto para <strong>{{ alerta.categoria }}</strong>.
+            </p>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">No hay alertas por el momento.</p>
+      {% endif %}
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
